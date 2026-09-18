@@ -1,11 +1,29 @@
-import Image from "next/image";
+import { Hero } from "@/components/sections/Hero";
+import { Marquee } from "@/components/sections/Marquee";
+import { SelectedWork } from "@/components/sections/SelectedWork";
+import { Numbers } from "@/components/sections/Numbers";
+import { Expertise } from "@/components/sections/Expertise";
+import { Journey } from "@/components/sections/Journey";
+import { BeforeAfter } from "@/components/sections/BeforeAfter";
+import { Tools } from "@/components/sections/Tools";
+import { ExperienceTimeline } from "@/components/sections/ExperienceTimeline";
+import { Personal } from "@/components/sections/Personal";
+import { FinalCTA } from "@/components/sections/FinalCTA";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        Hello, my name is Thel Nu Eain -- UI/UX Designer.
-      </main>
-    </div>
+    <>
+      <Hero />
+      <Marquee />
+      <SelectedWork />
+      <Numbers />
+      <Expertise />
+      <Journey />
+      <BeforeAfter />
+      <Tools />
+      <ExperienceTimeline />
+      <Personal />
+      <FinalCTA />
+    </>
   );
 }
