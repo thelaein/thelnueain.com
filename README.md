@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# thelnueain.com — Thel Nu Portfolio
+
+Aurora-themed portfolio for **Thel Nu, UI/UX Designer** — ported from [thelnu.framer.website](https://thelnu.framer.website) to Next.js App Router with real Framer screenshots and production SEO.
+
+Live: **https://thelnueain.com** · Stack: **Next.js 16.3 (Turbopack) / React 19 / Tailwind CSS 4 / TypeScript 5**
+
+## Features
+
+- **Aurora design system** — dark canvas `#11121A`, accents `#7657FF → #5BE7FF`, `Fraunces` (head) + `Inter` (body) via `next/font`, blurred radial fields + grain, `CustomCursor`/`Decor`
+- **Home sections** — Hero (word-swap + parallax canvas), Marquee, SelectedWork (3 cases), Numbers, Expertise, Journey, Before/After, Tools (magnetic repel), Experience Timeline, Personal, FinalCTA
+- **Case studies** — `SSG` per `lib/data.ts:PROJECTS` (`hr` / `readfam` / `posco`) with persona, task flows, user stories, hypothesis, style-guide artifact, `next/image` heroes (`public/cases/{hr,readfam,posco}/hero.png`) and wireframe flow
+- **About** — real portrait `public/cases/about-portrait.jpg` (3423×3024 → 1500w), experience + principles + skills
+- **SEO** — `metadataBase`, `title.template`, `openGraph`/`twitter`, per-case `opengraph-image`, `icon` (512) / `apple-icon` (180) via `next/og`, `twitter-image`, `manifest.webmanifest`, `sitemap.xml`, `robots.txt`, `Person`+`WebSite` JSON-LD, canonicals
+- **Production routes** — `not-found`, `error`, `global-error`, `loading`, `proxy.ts` (ex-`middleware.ts` for Next 16.3), security headers + CSP in `next.config.ts`, `images: {avif,webp}`, `api/contact` (validation + 5/min rate-limit, ready for Resend)
+- **Contact** — controlled form (`ContactClient`) with `POST /api/contact`, consistent 52px fields + custom chevron
+
+## Architecture
+
+```
+app/
+  layout.tsx          // next/font, metadata, viewport, JsonLd, Decor/Cursor/Navbar/Footer
+  page.tsx            // Home (11 sections)
+  (work|about|process|playground|contact)/page.tsx  // server wrappers + metadata
+  case/[id]/page.tsx           // SSG + async generateMetadata
+  case/[id]/opengraph-image.tsx // per-case OG (1200×630)
+  icon.tsx / apple-icon.tsx / opengraph-image.tsx / twitter-image.tsx
+  sitemap.ts / robots.ts / manifest.ts
+  not-found.tsx / error.tsx / global-error.tsx / loading.tsx
+  api/contact/route.ts
+components/
+  layout/ (Navbar, Footer, Decor, CustomCursor)
+  sections/ (Hero, Marquee, SelectedWork, Numbers, Expertise, Journey, BeforeAfter, Tools, ExperienceTimeline, Personal, FinalCTA, CaseSections)
+  ui/ (MockVisual — Image fallback, Reveal)
+  work/WorkClient, process/ProcessClient, playground/PlaygroundClient, contact/ContactClient
+lib/
+  data.ts  // PROJECTS, EXPERIENCE, TOOLS, etc. (enriched from Framer)
+  seo.ts   // siteConfig
+proxy.ts
+public/cases/  // real screenshots (hero, phone, wireframe) + about-portrait.jpg
+```
+
+Original HTML template kept at `docs/thel-nu-portfolio.html` for reference.
 
 ## Getting Started
 
-First, run the development server:
+Requires `bun` 1.3+ (or npm/yarn/pnpm).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun dev      # http://localhost:3000
+bun run build # → 22 static routes
+bun start
+bun run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No env required for dev. For contact email, wire `lib/seo.ts:email` to Resend in `app/api/contact/route.ts:40`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---|---|
+| `bun dev` | Turbopack dev |
+| `bun run build` | Production build (Turbopack) |
+| `bun start` | Serve build |
+| `bun run lint` | ESLint (next) |
 
-## Learn More
+## Images
 
-To learn more about Next.js, take a look at the following resources:
+Real exports from Framer (`framerusercontent.com`) → `public/cases/`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `hr/hero.png` (composite 7 phones + desktop), `c1...`, `phone-checkin.png`, `xJsf` wireframe (now clean mock)
+- `readfam/hero.png`, `bq7...`, `Ea2...`
+- `posco/hero.png`, `NS3Xn...`, `zhbhte...`
+- `about-portrait.jpg` (Thel Nu reading, 1500w)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Add new case: extend `PROJECTS` in `lib/data.ts`, drop `hero.png` in `public/cases/<id>/`, `generateStaticParams` picks it up.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Vercel (recommended) — zero config; `next.config.ts` headers handle CSP. Set `NEXT_PUBLIC_GA_ID` for `components/analytics/Analytics.tsx` if needed.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+Portfolio content © Thel Nu. Code MIT.
